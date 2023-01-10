@@ -50,6 +50,176 @@ public class XGBoostJsonParserTests extends LuceneTestCase {
         assertEquals(0.234F, tree.score(tree.newFeatureVector(null)), Math.ulp(0.234F));
     }
 
+    public void testShiptLTR() throws IOException {
+        String model = readModel("/models/SpS_xgb_model_elastic_search.json");
+
+        // build feature names
+        String feature_names[] = new String[] {
+                "position_1",
+                "position_2",
+                "position_3",
+                "position_4",
+                "position_5",
+                "position_6",
+                "position_7",
+                "position_8",
+                "position_9",
+                "position_10",
+                "position_11",
+                "position_12",
+                "position_13",
+                "position_14",
+                "position_15",
+                "position_16",
+                "position_17",
+                "position_18",
+                "position_19",
+                "position_20",
+                "position_21",
+                "position_22",
+                "position_23",
+                "position_24",
+                "position_25",
+                "position_26",
+                "position_27",
+                "position_28",
+                "position_29",
+                "position_30",
+                "position_31",
+                "position_32",
+                "position_33",
+                "position_34",
+                "position_35",
+                "position_36",
+                "position_37",
+                "position_38",
+                "position_39",
+                "position_40",
+                "position_41",
+                "position_42",
+                "position_43",
+                "position_44",
+                "position_45",
+                "position_46",
+                "position_47",
+                "position_48",
+                "position_49",
+                "position_50",
+                "position_51",
+                "num_query_tokens",
+                "textual",
+                "es_log_sale_rank",
+                "es_product_price",
+                "synonymn",
+                "bm25_name",
+                "bm25_brand",
+                "bm25_category",
+                "num_tokens_product_name",
+                "query_category_feature_H1_Score",
+                "query_category_feature_H2_Score",
+                "query_category_feature_leafnode_Score",
+                "jaccard_score_title",
+                "jaccard_score_brand",
+                "jaccard_score_category",
+                "product_atc_rate",
+                "query_product_atc_rate",
+                "product_days_in_catalog",
+                "log_product_days_in_catalog",
+                "brand_match"};
+        List<StoredFeature> features = new ArrayList<StoredFeature>();
+        for (String feature_name: feature_names) {
+            features.add(randomFeature(feature_name));
+        }
+        FeatureSet set = new StoredFeatureSet("set", features);
+        NaiveAdditiveDecisionTree tree = parser.parse(set, model);
+        System.out.println("loaded model successfully");
+
+        // build feature values
+        float feature_values[] = new float[] {
+                1F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                0F,
+                1.0F,
+                89.410645F,
+                14.727233F,
+                6.09F,
+                6.884809F,
+                4.6122932F,
+                Float.NaN,
+                5.660995F,
+                8.0F,
+                0.8709F,
+                0.8566F,
+                0.7817F,
+                0.13333334F,
+                0.0F,
+                1.0F,
+                228.0F,
+                76.0F,
+                2882.0F,
+                7.9665866F,
+                0.0F
+        };
+        FeatureVector v = tree.newFeatureVector(null);
+        for (int i = 0; i < feature_values.length; i ++) {
+            v.setFeatureScore(i, feature_values[i]);
+        }
+
+        float score = tree.score(v);
+        System.out.println("raw score is: " + score);
+        float normalized_score = (float) (1 / (1 + Math.exp(-score)));
+        System.out.println("transformed score is: " + normalized_score);
+        assertEquals(0.043071, normalized_score, 0.0001F);
+    }
+
     public void testReadSimpleSplit() throws IOException {
         String model = "[{" +
                 "\"nodeid\": 0," +

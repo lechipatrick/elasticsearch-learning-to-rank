@@ -4,7 +4,7 @@ Hi! Thanks for your interest in contributing to Elasticsearch Learning to Rank. 
 
 We have many ways you can help with this project.
 
-- Help with issues that are really support items / questions 
+- Help dummy with issues that are really support items / questions 
 - Add new model types / features to the codebase (such as LightGBM, etc)
 - Help us with upgrades to major / minor Elasticsearch updates
 - Improve the docs to cover areas not well explored in plugin functionality
